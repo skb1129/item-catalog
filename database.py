@@ -29,16 +29,16 @@ class Movies(Base):
 
 
 	@property
-    def serialize(self):
-        """Return object data for json file."""
-        return {
+	def serialize(self):
+		"""Return object data for json file."""
+		return {
 			'id': self.id,
-            'name': self.name,
+			'name': self.name,
 			'posterUrl': self.posterUrl,
-            'director': self.director,
+			'director': self.director,
 			'description': self.description,
 			'genre': self.genre
-        }
+		}
 
 
 engine = create_engine('sqlite:///movies.db')
