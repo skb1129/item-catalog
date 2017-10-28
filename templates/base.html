@@ -29,26 +29,13 @@
         </button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto">
+					{% for genre in genres %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('genre_page', genre='sci-fi') }}">Sci-Fi</a>
+						<a class="nav-link" href="{{ url_for('genre_page', genre={{genre.name}}) }}">{{genre.name}}</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('genre_page', genre='horror') }}">Horror</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('genre_page', genre='action') }}">Action</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('genre_page', genre='drama') }}">Drama</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('genre_page', genre='adventure') }}">Adventure</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('genre_page', genre='mystery') }}">Mystery</a>
-					</li>
+					{% endfor %}
 				</ul>
-				<button class="btn btn-secondary">Login</button>
+				<button href="{{ url_for() }}" class="btn btn-secondary">Login</button>
 			</div>
 		</div>
 	</nav>

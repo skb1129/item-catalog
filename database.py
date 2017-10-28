@@ -18,13 +18,13 @@ class Users(Base):
 class Genres(Base):
 	__tablename__ = 'genres'
 
-	genre = Column(String(80), primary_key = True)
+	name = Column(String(80), primary_key = True)
 
 	@property
 	def serialize(self):
 		"""Return object data for json file."""
 		return {
-			'genre': self.genre
+			'name': self.genre
 		}
 
 
@@ -36,7 +36,7 @@ class Movies(Base):
 	director = Column(String(80), nullable = False)
 	description = Column(Text)
 	posterUrl = Column(String(80))
-	genre = Column(String(80), ForeignKey('genres.genre'))
+	genre = Column(String(80), ForeignKey('genres.name'))
 	genres = relationship(Genres)
 	user_id = Column(Integer, ForeignKey('users.id'))
 	users = relationship(Users)

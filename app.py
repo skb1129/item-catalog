@@ -3,7 +3,7 @@ import re
 from flask import Flask, render_template, request, redirect, url_for, session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database import Users, Movies
+from database import Users, Genres, Movies
 
 app = Flask(__name__)
 
@@ -16,19 +16,20 @@ Session = DBSession()
 @app.route('/')
 @app.route('/movies/')
 def main_page():
-	return render_template('')
+	genres = Session.query(Genres).all()
+	return render_template('main_page.html', genres=genres)
 
 
 @app.route('/movies/<genre>/')
 def genre_page(genre):
 	movies = Session.query(Movies).filter_by(genre=genre).all()
-	return render_template('', movies=movies, genre=genre)
+	return render_template('genre_page.html', movies=movies, genre=genre)
 
 
 @app.route('/movies/<int:movie_id>/')
 def movie_page(movie_id):
 	movie = Session.query(Movies).filter_by(id=movie_id).one()
-	return render_template('', movie=movie, movie_id=movie_id)
+	return render_template('movie_page.html', movie=movie, movie_id=movie_id)
 
 
 @app.route('/post_movie/', methods=['GET', 'POST'])
@@ -44,7 +45,7 @@ def post_movie():
 		Session.commit()
 		return redirect(url_for('movie_page', movie_id=movie.id))
 	else:
-		return render_template('')
+		return render_template('post_movie.html')
 
 
 @app.route('/delete_movie/<int:movie_id>/')
