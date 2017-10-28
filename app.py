@@ -22,14 +22,18 @@ def main_page():
 
 @app.route('/movies/<genre>/')
 def genre_page(genre):
+	genres = Session.query(Genres).all()
 	movies = Session.query(Movies).filter_by(genre=genre).all()
-	return render_template('genre_page.html', movies=movies, genre=genre)
+	return render_template('genre_page.html', movies=movies, genre=genre,
+							genres=genres)
 
 
 @app.route('/movies/<int:movie_id>/')
 def movie_page(movie_id):
+	genres = Session.query(Genres).all()
 	movie = Session.query(Movies).filter_by(id=movie_id).one()
-	return render_template('movie_page.html', movie=movie, movie_id=movie_id)
+	return render_template('movie_page.html', movie=movie, movie_id=movie_id,
+							genres=genres)
 
 
 @app.route('/post_movie/', methods=['GET', 'POST'])
@@ -45,7 +49,8 @@ def post_movie():
 		Session.commit()
 		return redirect(url_for('movie_page', movie_id=movie.id))
 	else:
-		return render_template('post_movie.html')
+		genres = Session.query(Genres).all()
+		return render_template('post_movie.html', genres=genres)
 
 
 @app.route('/delete_movie/<int:movie_id>/')
