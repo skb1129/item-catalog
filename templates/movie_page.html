@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="my-4">{{movie.name}}</h1>
+<div class="row">
+    <div class="col-md-8">
+        <img class="img-fluid" src={{movie.posterUrl}} alt="">
+    </div>
+    <div class="col-md-4">
+        <h3 class="my-3">{{movie.name}}</h3>
+        <p>{{movie.description}}</p>
+        <h3 class="my-3">Directed By :</h3>
+        <p>{{movie.director}}</p>
+    </div>
+</div>
+{% endblock %}
