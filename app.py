@@ -43,14 +43,25 @@ def post_movie():
 						director=request.form['director'],
 						description=request.form['description'],
 						posterUrl=request.form['posterUrl'],
-						genre=request.form['genre'],
-						user_id=)
+						genre=request.form['genre'])
 		Session.add(movie)
 		Session.commit()
 		return redirect(url_for('movie_page', movie_id=movie.id))
 	else:
 		genres = Session.query(Genres).all()
 		return render_template('post_movie.html', genres=genres)
+
+
+@app.route('/create_genre/', methods=['GET', 'POST'])
+def create_genre():
+	if request.method == 'POST':
+		genre = Genres(name=request.form['name'])
+		Session.add(genre)
+		Session.commit()
+		return redirect(url_for('main_page'))
+	else:
+		genres = Session.query(Genres).all()
+		return render_template('create_genre.html', genres=genres)
 
 
 @app.route('/delete_movie/<int:movie_id>/')

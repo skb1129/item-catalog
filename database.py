@@ -38,8 +38,8 @@ class Movies(Base):
 	posterUrl = Column(String(80))
 	genre = Column(String(80), ForeignKey('genres.name'))
 	genres = relationship(Genres)
-	user_id = Column(Integer, ForeignKey('users.id'))
-	users = relationship(Users)
+	#user_id = Column(Integer, ForeignKey('users.id'))
+	#users = relationship(Users)
 
 
 	@property
