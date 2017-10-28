@@ -3,7 +3,7 @@ import re
 from flask import Flask, render_template, request, redirect, url_for, session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database import Users, Genres, Movies
+from database import Base, Users, Genres, Movies
 
 app = Flask(__name__)
 
@@ -74,7 +74,7 @@ def delete_movie(movie_id):
 
 @app.route('/edit_movie/<int:movie_id>', methods=['GET', 'POST'])
 def edit_movie(movie_id):
-	if request.method = 'POST':
+	if request.method == 'POST':
 		movie = Session.query(Movies).filter_by(id=movie_id).one()
 		movie.name=request.form['name']
 		movie.director=request.form['director']

@@ -2,7 +2,7 @@
 <h1 class="my-4">Select a Genre from below :</h1>
 <div class="list-group">
     {% for genre in genres %}
-    <a href="{{ url_for('genre_page', genre={{genre.name}}) }}" class="list-group-item list-group-item-action">{{genre.name}}</a>
+    <a href="{{ url_for('genre_page', genre=genre.name) }}" class="list-group-item list-group-item-action">{{genre.name}}</a>
     {% endfor %}
 </div>
 {% endblock %}

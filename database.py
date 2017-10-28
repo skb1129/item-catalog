@@ -20,6 +20,7 @@ class Genres(Base):
 
 	name = Column(String(80), primary_key = True)
 
+
 	@property
 	def serialize(self):
 		"""Return object data for json file."""
@@ -56,3 +57,5 @@ class Movies(Base):
 
 
 engine = create_engine('sqlite:///movies.db')
+
+Base.metadata.create_all(engine)
