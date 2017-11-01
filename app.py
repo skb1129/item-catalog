@@ -36,20 +36,26 @@ def movie_page(movie_id):
 							genres=genres)
 
 
-@app.route('/post_movie/', methods=['GET', 'POST'])
-def post_movie():
+@app.route('/post_page/', methods=['GET', 'POST'])
+def post_page():
 	if request.method == 'POST':
-		movie = Movies(name=request.form['name'],
-						director=request.form['director'],
-						description=request.form['description'],
-						posterUrl=request.form['posterUrl'],
-						genre=request.form['genre'])
-		Session.add(movie)
-		Session.commit()
-		return redirect(url_for('movie_page', movie_id=movie.id))
+		if 'new_genre' in request.form:
+			genre = Genres(name=request.form['new_genre'])
+			Session.add(genre)
+			Session.commit()
+			return redirect(url_for('main_page'))
+		else:
+			movie = Movies(name=request.form['name'],
+							director=request.form['director'],
+							description=request.form['description'],
+							posterUrl=request.form['posterUrl'],
+							genre=request.form['genre'])
+			Session.add(movie)
+			Session.commit()
+			return redirect(url_for('movie_page', movie_id=movie.id))
 	else:
 		genres = Session.query(Genres).all()
-		return render_template('post_movie.html', genres=genres)
+		return render_template('post_page.html', genres=genres)
 
 
 @app.route('/create_genre/', methods=['GET', 'POST'])
