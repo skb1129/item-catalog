@@ -2,3 +2,12 @@
 	padding-top: 70px;
 	padding-bottom: 50px;
 }
+
+#add-btn {
+	position: fixed;
+	transform: translate(-100%, -100%);
+	top: 95%;
+	left: 90%;
+	z-index: 4;
+	box-shadow: 5px 5px 2px #888888;
+}
