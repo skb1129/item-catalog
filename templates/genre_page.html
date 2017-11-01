@@ -2,7 +2,7 @@
 <div class="row">
     {% for movie in movies %}
     <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
+        <div class="card">
             <a href="{{ url_for('movie_page', movie_id=movie.id) }}"><img class="card-img-top" src={{movie.posterUrl}} alt={{movie.name}}></a>
             <div class="card-body">
                 <h4 class="card-title">
