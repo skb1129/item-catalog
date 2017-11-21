@@ -2,10 +2,10 @@ function loginCallback(authResult) {
 	if (authResult['code']) {
 		$.ajax({
 			type: 'POST',
-			url: '/gconnect?state={{STATE}}',
+			url: '/gconnect?state=' + state,
 			processData: false,
 			data: authResult['code'],
-			contentType: 'application/octet-stream; charset=utf-8',
+			contentType: 'application/json',
 			success: function (result) {
 				if (result) {
 					window.location.href = '/';
@@ -20,7 +20,7 @@ function loginCallback(authResult) {
 }
 
 
-gapi.signin2.render('google_login', {
+gapi.signin.render('google_login', {
 	'clientid': '328779283947-c2aqhd0qg0orkqunoc8ja2rb1mrq28or.apps.googleusercontent.com',
 	'callback': loginCallback,
 	'cookiepolicy': 'single_host_origin',
