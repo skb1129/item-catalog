@@ -13,6 +13,9 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 Session = DBSession()
 
+CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = 'Movie-Cafe'
 
 def state():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
