@@ -19,6 +19,21 @@ function loginCallback(authResult) {
 	}
 }
 
+function logout() {
+	$.ajax({
+		type: 'POST',
+		url: '/logout',
+		processData: false,
+		contentType: 'application/json',
+		success: function (result) {
+			if (result) {
+				window.location.href = '/';
+			} else {
+				$('body').html('Failed to make a server-side call. Check your configuration and console.');
+			}
+		}
+	});
+}
 
 gapi.signin.render('google_login', {
 	'clientid': '328779283947-c2aqhd0qg0orkqunoc8ja2rb1mrq28or.apps.googleusercontent.com',
