@@ -1,9 +1,12 @@
 import os, random, string, datetime, json, httplib2, requests, re
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import make_response
 from flask import session as login_session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database import Base, Users, Genres, Movies
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
 
 app = Flask(__name__)
 
@@ -28,7 +31,8 @@ def state():
 @app.route('/movies/')
 def main_page():
 	genres = Session.query(Genres).all()
-	return render_template('main_page.html', genres=genres, STATE=state())
+	return render_template('main_page.html', genres=genres, STATE=state(),
+							login_session=login_session)
 
 
 @app.route('/movies/<genre>/')
@@ -36,7 +40,8 @@ def genre_page(genre):
 	genres = Session.query(Genres).all()
 	movies = Session.query(Movies).filter_by(genre=genre).all()
 	return render_template('genre_page.html', movies=movies, genre=genre,
-							genres=genres, STATE=state())
+							genres=genres, STATE=state(),
+							login_session=login_session)
 
 
 @app.route('/movies/<int:movie_id>/')
@@ -44,7 +49,8 @@ def movie_page(movie_id):
 	genres = Session.query(Genres).all()
 	movie = Session.query(Movies).filter_by(id=movie_id).one()
 	return render_template('movie_page.html', movie=movie, movie_id=movie_id,
-							genres=genres, STATE=state())
+							genres=genres, STATE=state(),
+							login_session=login_session)
 
 
 @app.route('/post_page/', methods=['GET', 'POST'])
@@ -66,7 +72,8 @@ def post_page():
 			return redirect(url_for('movie_page', movie_id=movie.id))
 	else:
 		genres = Session.query(Genres).all()
-		return render_template('post_page.html', genres=genres, STATE=state())
+		return render_template('post_page.html', genres=genres, STATE=state(),
+								login_session=login_session)
 
 
 @app.route('/delete_movie/<int:movie_id>/')
@@ -97,7 +104,7 @@ def gconnect():
 	if request.args.get('state') != login_session['state']:
 		response = make_response(json.dumps('Invalid state parameter.'), 401)
 		response.headers['Content-Type'] = 'application/json'
-	return response
+		return response
 	# Obtain authorization code
 	code = request.data
 
@@ -159,9 +166,13 @@ def gconnect():
 
 	data = answer.json()
 
-	login_session['username'] = data['name']
+	login_session['name'] = data['name']
 	login_session['picture'] = data['picture']
 	login_session['email'] = data['email']
+
+	return jsonify(name=login_session['name'],
+					email=login_session['email'],
+					picture=login_session['picture'])
 
 
 @app.route('/gdisconnect')
@@ -177,7 +188,7 @@ def gdisconnect():
 	if result['status'] == '200':
 		del login_session['access_token'] 
 		del login_session['gplus_id']
-		del login_session['username']
+		del login_session['name']
 		del login_session['email']
 		del login_session['picture']
 		response = make_response(json.dumps('Successfully disconnected.'), 200)
