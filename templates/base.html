@@ -35,7 +35,7 @@
 					</li>
 					{% endfor %}
 				</ul>
-				{% if login_session['name'] %}
+				{% if login_session.get('email') %}
 					<button href="#" onclick="logout()" class="btn btn-secondary">Logout</button>				
 				{% else %}
 					<button href="#" id="google_login" class="btn btn-secondary">Login</button>

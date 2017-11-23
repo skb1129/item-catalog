@@ -64,26 +64,29 @@ def movie_page(movie_id):
 
 @app.route('/post_page/', methods=['GET', 'POST'])
 def post_page():
-	if request.method == 'POST':
-		if 'new_genre' in request.form:
-			genre = Genres(name=request.form['new_genre'])
-			Session.add(genre)
-			Session.commit()
-			return redirect(url_for('main_page'))
+	if login_session.get('email') is not None:
+		if request.method == 'POST':
+			if 'new_genre' in request.form:
+				genre = Genres(name=request.form['new_genre'])
+				Session.add(genre)
+				Session.commit()
+				return redirect(url_for('main_page'))
+			else:
+				movie = Movies(name=request.form['name'],
+								director=request.form['director'],
+								description=request.form['description'],
+								posterUrl=request.form['posterUrl'],
+								genre=request.form['genre'],
+								user_email=login_session['email'])
+				Session.add(movie)
+				Session.commit()
+				return redirect(url_for('movie_page', movie_id=movie.id))
 		else:
-			movie = Movies(name=request.form['name'],
-							director=request.form['director'],
-							description=request.form['description'],
-							posterUrl=request.form['posterUrl'],
-							genre=request.form['genre'],
-							user_email=login_session['email'])
-			Session.add(movie)
-			Session.commit()
-			return redirect(url_for('movie_page', movie_id=movie.id))
+			genres = Session.query(Genres).all()
+			return render_template('post_page.html', genres=genres, STATE=state(),
+									login_session=login_session)
 	else:
-		genres = Session.query(Genres).all()
-		return render_template('post_page.html', genres=genres, STATE=state(),
-								login_session=login_session)
+		return redirect(url_for('error_page', error='You need to login first.'))
 
 
 @app.route('/delete_movie/<int:movie_id>/')
