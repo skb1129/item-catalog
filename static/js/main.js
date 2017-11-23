@@ -22,7 +22,7 @@ function loginCallback(authResult) {
 function logout() {
 	$.ajax({
 		type: 'POST',
-		url: '/logout',
+		url: '/gdisconnect',
 		processData: false,
 		contentType: 'application/json',
 		success: function (result) {
@@ -39,6 +39,7 @@ gapi.signin.render('google_login', {
 	'clientid': '328779283947-c2aqhd0qg0orkqunoc8ja2rb1mrq28or.apps.googleusercontent.com',
 	'callback': loginCallback,
 	'cookiepolicy': 'single_host_origin',
+	'requestvisibleactions': 'http://schemas.google.com/AddActivity',
 	'scope': 'openid email',
 	'redirecturi': 'postmessage',
 	'accesstype': 'offline',

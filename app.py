@@ -187,12 +187,7 @@ def gconnect():
 					picture=login_session['picture'])
 
 
-@app.route('/logout', methods=['POST'])
-def logout():
-	return redirect(url_for('gdisconnect'))
-
-
-@app.route('/gdisconnect')
+@app.route('/gdisconnect', methods=['POST'])
 def gdisconnect():
 	access_token = login_session['access_token']
 	if access_token is None:
@@ -208,8 +203,6 @@ def gdisconnect():
 		del login_session['name']
 		del login_session['email']
 		del login_session['picture']
-		#response = make_response(json.dumps('Successfully disconnected.'), 200)
-		#response.headers['Content-Type'] = 'application/json'
 		return redirect(url_for('main_page'))
 	else:
 		response = make_response(json.dumps('Failed to revoke token for given user.', 400))
