@@ -210,6 +210,13 @@ def gdisconnect():
 		return response
 
 
+@app.route('/<error>')
+def error_page(error):
+	genres = Session.query(Genres).all()	
+	return render_template('error_page.html', error=error, genres=genres,
+							STATE=state(), login_session=login_session)
+
+
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
     app.debug = True
