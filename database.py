@@ -9,10 +9,9 @@ Base = declarative_base()
 class Users(Base):
 	__tablename__ = 'users'
 
-	id = Column(Integer, primary_key = True)
+	email = Column(String(80), primary_key = True)
 	name = Column(String(80), nullable = False)
-	email = Column(String(80), nullable = False)
-	imageUrl = Column(String(80))
+	picture = Column(String(80))
 
 
 class Genres(Base):
@@ -39,8 +38,8 @@ class Movies(Base):
 	posterUrl = Column(String(80))
 	genre = Column(String(80), ForeignKey('genres.name'))
 	genres = relationship(Genres)
-	#user_id = Column(Integer, ForeignKey('users.id'))
-	#users = relationship(Users)
+	user_email = Column(String(80), ForeignKey('users.email'))
+	users = relationship(Users)
 
 
 	@property

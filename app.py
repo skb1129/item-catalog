@@ -27,6 +27,15 @@ def state():
     return state
 
 
+def create_user():
+	if not Session.query(Users).filter_by(email=login_session['email']).one_or_none():
+		user = Users(email=login_session['email'],
+						name=login_session['name'],
+						picture=login_session['picture'])
+		Session.add(user)
+		Session.commit()
+
+
 @app.route('/')
 @app.route('/movies/')
 def main_page():
@@ -66,7 +75,8 @@ def post_page():
 							director=request.form['director'],
 							description=request.form['description'],
 							posterUrl=request.form['posterUrl'],
-							genre=request.form['genre'])
+							genre=request.form['genre'],
+							user_email=login_session['email'])
 			Session.add(movie)
 			Session.commit()
 			return redirect(url_for('movie_page', movie_id=movie.id))
@@ -169,6 +179,8 @@ def gconnect():
 	login_session['name'] = data['name']
 	login_session['picture'] = data['picture']
 	login_session['email'] = data['email']
+
+	create_user()
 
 	return jsonify(name=login_session['name'],
 					email=login_session['email'],
