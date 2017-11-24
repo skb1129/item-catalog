@@ -135,7 +135,7 @@ def delete_genre(genre):
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
 	# Validate state token
-	if request.args.get('state') != login_session['state']:
+	if request.args.get('state') != login_session.get('state'):
 		response = make_response(json.dumps('Invalid state parameter.'), 401)
 		response.headers['Content-Type'] = 'application/json'
 		return response
@@ -213,12 +213,12 @@ def gconnect():
 
 @app.route('/gdisconnect', methods=['POST'])
 def gdisconnect():
-	access_token = login_session['access_token']
+	access_token = login_session.get('access_token')
 	if access_token is None:
 		response = make_response(json.dumps('Current user not connected.'), 401)
 		response.headers['Content-Type'] = 'application/json'
 		return response
-	url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+	url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session.get('access_token')
 	h = httplib2.Http()
 	result = h.request(url, 'GET')[0]
 	if result['status'] == '200':
