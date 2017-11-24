@@ -92,23 +92,30 @@ def post_page():
 @app.route('/delete_movie/<int:movie_id>/')
 def delete_movie(movie_id):
 	movie = Session.query(Movies).filter_by(id=movie_id).one()
-	Session.delete(movie)
-	Session.commit()
-	return redirect(url_for('main_page'))
+	if login_session.get('email') == movie.user_email:	
+		Session.delete(movie)
+		Session.commit()
+		return redirect(url_for('main_page'))
+	else:
+		return redirect(url_for('error_page', error='You are not Authorized.'))
 
 
 @app.route('/edit_movie/<int:movie_id>', methods=['GET', 'POST'])
 def edit_movie(movie_id):
 	if request.method == 'POST':
 		movie = Session.query(Movies).filter_by(id=movie_id).one()
-		movie.name = request.form['name']
-		movie.director = request.form['director']
-		movie.description = request.form['description']
-		movie.posterUrl = request.form['posterUrl']
-		movie.genre = request.form['genre']
-		Session.add(movie)
-		Session.commit()
-		return redirect(url_for('movie_page', movie_id=movie_id))
+		if login_session.get('email') == movie.user_email:
+			movie.name = request.form['name']
+			movie.director = request.form['director']
+			movie.description = request.form['description']
+			movie.posterUrl = request.form['posterUrl']
+			movie.genre = request.form['genre']
+			Session.add(movie)
+			Session.commit()
+			return redirect(url_for('movie_page', movie_id=movie_id))
+		else:
+			return redirect(url_for('error_page',
+										error='You are not Authorized.'))
 
 
 @app.route('/gconnect', methods=['POST'])
