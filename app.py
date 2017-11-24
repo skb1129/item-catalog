@@ -1,6 +1,6 @@
 import os, random, string, datetime, json, httplib2, requests, re
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask import make_response
+from flask import make_response, g
 from flask import session as login_session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -20,11 +20,10 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = 'movie-cafe'
 
-def state():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
-    login_session['state'] = state
-    return state
+def set_state():
+	g.state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+						for x in xrange(32))
+	login_session['state'] = g.state
 
 
 def create_user():
@@ -39,31 +38,33 @@ def create_user():
 @app.route('/')
 @app.route('/movies/')
 def main_page():
+	set_state()
 	genres = Session.query(Genres).all()
-	return render_template('main_page.html', genres=genres, STATE=state(),
+	return render_template('main_page.html', genres=genres,
 							login_session=login_session)
 
 
 @app.route('/movies/<genre>/')
 def genre_page(genre):
+	set_state()
 	genres = Session.query(Genres).all()
 	movies = Session.query(Movies).filter_by(genre=genre).all()
 	return render_template('genre_page.html', movies=movies, genre=genre,
-							genres=genres, STATE=state(),
-							login_session=login_session)
+							genres=genres, login_session=login_session)
 
 
 @app.route('/movies/<int:movie_id>/')
 def movie_page(movie_id):
+	set_state()
 	genres = Session.query(Genres).all()
 	movie = Session.query(Movies).filter_by(id=movie_id).one()
 	return render_template('movie_page.html', movie=movie, movie_id=movie_id,
-							genres=genres, STATE=state(),
-							login_session=login_session)
+							genres=genres, login_session=login_session)
 
 
 @app.route('/post_page/', methods=['GET', 'POST'])
 def post_page():
+	set_state()
 	if login_session.get('email') is not None:
 		if request.method == 'POST':
 			if 'new_genre' in request.form:
@@ -84,7 +85,7 @@ def post_page():
 				return redirect(url_for('movie_page', movie_id=movie.id))
 		else:
 			genres = Session.query(Genres).all()
-			return render_template('post_page.html', genres=genres, STATE=state(),
+			return render_template('post_page.html', genres=genres,
 									login_session=login_session)
 	else:
 		return redirect(url_for('error_page', error='You need to login first.'))
@@ -236,9 +237,10 @@ def gdisconnect():
 
 @app.route('/<error>')
 def error_page(error):
+	set_state()
 	genres = Session.query(Genres).all()	
 	return render_template('error_page.html', error=error, genres=genres,
-							STATE=state(), login_session=login_session)
+							login_session=login_session)
 
 
 if __name__ == '__main__':
