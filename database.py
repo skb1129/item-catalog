@@ -18,6 +18,8 @@ class Genres(Base):
 	__tablename__ = 'genres'
 
 	name = Column(String(80), primary_key = True)
+	user_email = Column(String(80), ForeignKey('users.email'))
+	users = relationship(Users)
 
 
 	@property

@@ -28,10 +28,10 @@ def state():
 
 
 def create_user():
-	if not Session.query(Users).filter_by(email=login_session['email']).one_or_none():
-		user = Users(email=login_session['email'],
-						name=login_session['name'],
-						picture=login_session['picture'])
+	if not Session.query(Users).filter_by(email=login_session.get('email')).one_or_none():
+		user = Users(email=login_session.get('email'),
+						name=login_session.get('name'),
+						picture=login_session.get('picture'))
 		Session.add(user)
 		Session.commit()
 
@@ -67,7 +67,8 @@ def post_page():
 	if login_session.get('email') is not None:
 		if request.method == 'POST':
 			if 'new_genre' in request.form:
-				genre = Genres(name=request.form['new_genre'])
+				genre = Genres(name=request.form['new_genre'],
+								user_email=login_session.get('email'))
 				Session.add(genre)
 				Session.commit()
 				return redirect(url_for('main_page'))
@@ -77,7 +78,7 @@ def post_page():
 								description=request.form['description'],
 								posterUrl=request.form['posterUrl'],
 								genre=request.form['genre'],
-								user_email=login_session['email'])
+								user_email=login_session.get('email'))
 				Session.add(movie)
 				Session.commit()
 				return redirect(url_for('movie_page', movie_id=movie.id))
@@ -116,6 +117,19 @@ def edit_movie(movie_id):
 		else:
 			return redirect(url_for('error_page',
 										error='You are not Authorized.'))
+
+
+@app.route('/delete_genre/<genre>')
+def delete_genre(genre):
+	genre = Session.query(Genres).filter_by(name=genre).one()
+	if login_session.get('email') == genre.user_email:	
+		movies = Session.query(Movies).filter_by(genre=genre).all()
+		Session.delete(movies)
+		Session.delete(genre)
+		Session.commit()
+		return redirect(url_for('main_page'))
+	else:
+		return redirect(url_for('error_page', error='You are not Authorized.'))
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -192,9 +206,9 @@ def gconnect():
 
 	create_user()
 
-	return jsonify(name=login_session['name'],
-					email=login_session['email'],
-					picture=login_session['picture'])
+	return jsonify(name=login_session.get('name'),
+					email=login_session.get('email'),
+					picture=login_session.get('picture'))
 
 
 @app.route('/gdisconnect', methods=['POST'])
@@ -208,11 +222,11 @@ def gdisconnect():
 	h = httplib2.Http()
 	result = h.request(url, 'GET')[0]
 	if result['status'] == '200':
-		del login_session['access_token'] 
-		del login_session['gplus_id']
-		del login_session['name']
-		del login_session['email']
-		del login_session['picture']
+		login_session.pop('access_token', None)
+		login_session.pop('gplus_id', None)
+		login_session.pop('name', None)
+		login_session.pop('email', None)
+		login_session.pop('picture', None)
 		return redirect(url_for('main_page'))
 	else:
 		response = make_response(json.dumps('Failed to revoke token for given user.', 400))
