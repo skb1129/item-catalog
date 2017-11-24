@@ -98,4 +98,8 @@ ENV/
 # mypy
 .mypy_cache/
 
+# vagrant folder
 .vagrant/
+
+# database
+.db
