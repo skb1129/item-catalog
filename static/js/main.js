@@ -8,7 +8,10 @@ function loginCallback(authResult) {
 			contentType: 'application/json',
 			success: function (result) {
 				if (result) {
-					window.location.href = window.location.pathname;
+					if (window.location.pathname == '/error/')
+						window.location.href = '/';
+					else
+						window.location.href = window.location.pathname;
 				} else if (authResult['error']) {
 					console.log('There was an error: ' + authResult['error']);
 				} else {
@@ -27,7 +30,10 @@ function logout() {
 		contentType: 'application/json',
 		success: function (result) {
 			if (result) {
-				window.location.href = window.location.pathname;
+				if (window.location.pathname == '/error/')
+					window.location.href = '/';
+				else
+					window.location.href = window.location.pathname;
 			} else {
 				$('body').html('Failed to make a server-side call. Check your configuration and console.');
 			}

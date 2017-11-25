@@ -57,7 +57,7 @@ def genre_page(genre):
 def movie_page(movie_id):
 	set_state()
 	genres = Session.query(Genres).all()
-	movie = Session.query(Movies).filter_by(id=movie_id).one()
+	movie = Session.query(Movies).filter_by(id=movie_id).one_or_none()
 	return render_template('movie_page.html', movie=movie, movie_id=movie_id,
 							genres=genres, login_session=login_session)
 
@@ -93,7 +93,7 @@ def post_page():
 
 @app.route('/delete_movie/<int:movie_id>/')
 def delete_movie(movie_id):
-	movie = Session.query(Movies).filter_by(id=movie_id).one()
+	movie = Session.query(Movies).filter_by(id=movie_id).one_or_none()
 	if login_session.get('email') == movie.user_email:	
 		Session.delete(movie)
 		Session.commit()
@@ -105,7 +105,7 @@ def delete_movie(movie_id):
 @app.route('/edit_movie/<int:movie_id>/', methods=['GET', 'POST'])
 def edit_movie(movie_id):
 	if request.method == 'POST':
-		movie = Session.query(Movies).filter_by(id=movie_id).one()
+		movie = Session.query(Movies).filter_by(id=movie_id).one_or_none()
 		if login_session.get('email') == movie.user_email:
 			movie.name = request.form['name']
 			movie.director = request.form['director']
@@ -122,10 +122,11 @@ def edit_movie(movie_id):
 
 @app.route('/delete_genre/<genre>/')
 def delete_genre(genre):
-	genre = Session.query(Genres).filter_by(name=genre).one()
+	genre = Session.query(Genres).filter_by(name=genre).one_or_none()
 	if login_session.get('email') == genre.user_email:	
-		movies = Session.query(Movies).filter_by(genre=genre).all()
-		Session.delete(movies)
+		movies = Session.query(Movies).filter_by(genre=genre.name).all()
+		if(movies):
+			Session.delete(movies)
 		Session.delete(genre)
 		Session.commit()
 		return redirect(url_for('main_page'))
