@@ -26,7 +26,7 @@ class Genres(Base):
 	def serialize(self):
 		"""Return object data for json file."""
 		return {
-			'name': self.genre
+			'name': self.name
 		}
 
 

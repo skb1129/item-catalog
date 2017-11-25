@@ -35,6 +35,24 @@ def create_user():
 		Session.commit()
 
 
+@app.route('/movies/<genre>/JSON')
+def movies_genre_json(genre):
+	movies = Session.query(Movies).filter_by(genre=genre).all()
+	return jsonify(Movies=[i.serialize for i in movies])
+
+
+@app.route('/movies/JSON')
+def movies_json():
+	movies = Session.query(Movies).all()
+	return jsonify(Movies=[i.serialize for i in movies])
+
+
+@app.route('/genres/JSON')
+def genres_json():
+	genres = Session.query(Genres).all()
+	return jsonify(Genres=[i.serialize for i in genres])
+
+
 @app.route('/')
 @app.route('/movies/')
 def main_page():
