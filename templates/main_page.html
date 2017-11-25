@@ -1,5 +1,9 @@
 {% extends "base.html" %} {% block content %}
-<h1 class="my-4">Select a Genre from below :</h1>
+{% if genres %}
+    <h1 class="my-4">Select a Genre from below :</h1>
+{% else %}
+    <h1 class="my-6">Nothing to show yet. Go ahead, create some genres and post some movies.</h1>
+{% endif %}
 <div class="list-group">
     {% for genre in genres %}
     <a href="{{ url_for('genre_page', genre=genre.name) }}" class="list-group-item list-group-item-action">{{genre.name}}</a>
