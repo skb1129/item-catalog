@@ -228,7 +228,9 @@ def gdisconnect():
 		login_session.pop('name', None)
 		login_session.pop('email', None)
 		login_session.pop('picture', None)
-		return redirect(url_for('main_page'))
+		response = make_response(json.dumps('Successfully disconnected.'), 200)
+		response.headers['Content-Type'] = 'application/json'
+		return response
 	else:
 		response = make_response(json.dumps('Failed to revoke token for given user.', 400))
 		response.headers['Content-Type'] = 'application/json'
