@@ -11,3 +11,7 @@
 	z-index: 4;
 	box-shadow: 5px 5px 2px #888888;
 }
+
+#edit-form {
+	padding-top: 15px;
+}

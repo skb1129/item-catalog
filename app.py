@@ -111,7 +111,6 @@ def edit_movie(movie_id):
 			movie.director = request.form['director']
 			movie.description = request.form['description']
 			movie.posterUrl = request.form['posterUrl']
-			movie.genre = request.form['genre']
 			Session.add(movie)
 			Session.commit()
 			return redirect(url_for('movie_page', movie_id=movie_id))
