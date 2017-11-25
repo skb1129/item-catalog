@@ -9,6 +9,9 @@
         <p>{{movie.description}}</p>
         <h3 class="my-3">Directed By :</h3>
         <p>{{movie.director}}</p>
+        {% if login_session.get('email') == movie.user_email %}
+            <a class="btn btn-danger" href="{{ url_for('delete_movie', movie_id=movie.id )}}">Delete</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
