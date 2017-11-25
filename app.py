@@ -102,7 +102,7 @@ def delete_movie(movie_id):
 		return redirect(url_for('error_page', error='You are not Authorized.'))
 
 
-@app.route('/edit_movie/<int:movie_id>', methods=['GET', 'POST'])
+@app.route('/edit_movie/<int:movie_id>/', methods=['GET', 'POST'])
 def edit_movie(movie_id):
 	if request.method == 'POST':
 		movie = Session.query(Movies).filter_by(id=movie_id).one()
@@ -120,7 +120,7 @@ def edit_movie(movie_id):
 										error='You are not Authorized.'))
 
 
-@app.route('/delete_genre/<genre>')
+@app.route('/delete_genre/<genre>/')
 def delete_genre(genre):
 	genre = Session.query(Genres).filter_by(name=genre).one()
 	if login_session.get('email') == genre.user_email:	
@@ -133,7 +133,7 @@ def delete_genre(genre):
 		return redirect(url_for('error_page', error='You are not Authorized.'))
 
 
-@app.route('/gconnect', methods=['POST'])
+@app.route('/gconnect/', methods=['POST'])
 def gconnect():
 	# Validate state token
 	if request.args.get('state') != login_session.get('state'):
@@ -212,7 +212,7 @@ def gconnect():
 					picture=login_session.get('picture'))
 
 
-@app.route('/gdisconnect', methods=['POST'])
+@app.route('/gdisconnect/', methods=['POST'])
 def gdisconnect():
 	access_token = login_session.get('access_token')
 	if access_token is None:
@@ -235,12 +235,12 @@ def gdisconnect():
 		return response
 
 
-@app.route('/<error>')
-def error_page(error):
+@app.route('/error/')
+def error_page():
 	set_state()
 	genres = Session.query(Genres).all()	
-	return render_template('error_page.html', error=error, genres=genres,
-							login_session=login_session)
+	return render_template('error_page.html', error=request.args.get('error'),
+							genres=genres, login_session=login_session)
 
 
 if __name__ == '__main__':

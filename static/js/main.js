@@ -2,7 +2,7 @@ function loginCallback(authResult) {
 	if (authResult['code']) {
 		$.ajax({
 			type: 'POST',
-			url: '/gconnect?state=' + state,
+			url: '/gconnect/?state=' + state,
 			processData: false,
 			data: authResult['code'],
 			contentType: 'application/json',
@@ -22,7 +22,7 @@ function loginCallback(authResult) {
 function logout() {
 	$.ajax({
 		type: 'POST',
-		url: '/gdisconnect',
+		url: '/gdisconnect/',
 		processData: false,
 		contentType: 'application/json',
 		success: function (result) {
