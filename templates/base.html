@@ -15,8 +15,11 @@
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 
+	<!-- Sweet Alert CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.3/sweetalert2.min.css">
+	
 	<!-- Custom styles for this template -->
-	<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
 </head>
 
@@ -65,6 +68,9 @@
 	<!-- Platform JS -->
 	<script src="https://apis.google.com/js/platform.js"></script>
 
+	<!-- Sweet Alert JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.3/sweetalert2.min.js"></script>
+	
 	<script>
 		var state = '{{g.state}}';
 	</script>

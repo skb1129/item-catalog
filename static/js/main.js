@@ -8,10 +8,18 @@ function loginCallback(authResult) {
 			contentType: 'application/json',
 			success: function (result) {
 				if (result) {
-					if (window.location.pathname == '/error/')
-						window.location.href = '/';
-					else
-						window.location.href = window.location.pathname;
+					swal({
+						title: 'Successful Login',
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Go Ahead!'
+					}).then((result) => {
+						if (window.location.pathname == '/error/')
+							window.location.href = '/';
+						else
+							window.location.href = window.location.pathname;
+					})
 				} else if (authResult['error']) {
 					console.log('There was an error: ' + authResult['error']);
 				} else {
@@ -30,10 +38,18 @@ function logout() {
 		contentType: 'application/json',
 		success: function (result) {
 			if (result) {
-				if (window.location.pathname == '/error/')
-					window.location.href = '/';
-				else
-					window.location.href = window.location.pathname;
+				swal({
+					title: 'Successful Logout',
+					type: 'success',
+					showCancelButton: false,
+					confirmButtonColor: '#3085d6',
+					confirmButtonText: 'Continue!'
+				}).then((result) => {
+					if (window.location.pathname == '/error/')
+						window.location.href = '/';
+					else
+						window.location.href = window.location.pathname;
+				})
 			} else {
 				$('body').html('Failed to make a server-side call. Check your configuration and console.');
 			}
