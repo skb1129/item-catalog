@@ -10,6 +10,7 @@ from oauth2client.client import FlowExchangeError
 
 app = Flask(__name__)
 
+# Connect to Database and create database session.
 engine = create_engine('sqlite:///movies.db')
 Base.metadata.bind = engine
 
@@ -20,12 +21,14 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = 'movie-cafe'
 
+# Creates and sets a new anti-forgery state token.
 def set_state():
 	g.state = ''.join(random.choice(string.ascii_uppercase + string.digits)
 						for x in xrange(32))
 	login_session['state'] = g.state
 
 
+# Checks current user in DB and creates entry if not found.
 def create_user():
 	if not Session.query(Users).filter_by(email=login_session.get('email')).one_or_none():
 		user = Users(email=login_session.get('email'),
@@ -35,24 +38,29 @@ def create_user():
 		Session.commit()
 
 
+# JSON APIs to view movies data.
+# JSON for movies of a genre.
 @app.route('/movies/<genre>/JSON')
 def movies_genre_json(genre):
 	movies = Session.query(Movies).filter_by(genre=genre).all()
 	return jsonify(Movies=[i.serialize for i in movies])
 
 
+# JSON for all the movies.
 @app.route('/movies/JSON')
 def movies_json():
 	movies = Session.query(Movies).all()
 	return jsonify(Movies=[i.serialize for i in movies])
 
 
+# JSON for all the genres.
 @app.route('/genres/JSON')
 def genres_json():
 	genres = Session.query(Genres).all()
 	return jsonify(Genres=[i.serialize for i in genres])
 
 
+# Main Page shows all the genres.
 @app.route('/')
 @app.route('/movies/')
 def main_page():
@@ -62,6 +70,7 @@ def main_page():
 							login_session=login_session)
 
 
+# Displays movies of a genre.
 @app.route('/movies/<genre>/')
 def genre_page(genre):
 	set_state()
@@ -71,6 +80,7 @@ def genre_page(genre):
 							genres=genres, login_session=login_session)
 
 
+# Display movie details.
 @app.route('/movies/<int:movie_id>/')
 def movie_page(movie_id):
 	set_state()
@@ -80,6 +90,7 @@ def movie_page(movie_id):
 							genres=genres, login_session=login_session)
 
 
+# To post a new movie or create a new genre.
 @app.route('/post_page/', methods=['GET', 'POST'])
 def post_page():
 	set_state()
@@ -109,6 +120,7 @@ def post_page():
 		return redirect(url_for('error_page', error='You need to login first.'))
 
 
+# To delete a posted movie.
 @app.route('/delete_movie/<int:movie_id>/')
 def delete_movie(movie_id):
 	movie = Session.query(Movies).filter_by(id=movie_id).one_or_none()
@@ -120,23 +132,24 @@ def delete_movie(movie_id):
 		return redirect(url_for('error_page', error='You are not Authorized.'))
 
 
-@app.route('/edit_movie/<int:movie_id>/', methods=['GET', 'POST'])
+# To edit a movie.
+@app.route('/edit_movie/<int:movie_id>/', methods=['POST'])
 def edit_movie(movie_id):
-	if request.method == 'POST':
-		movie = Session.query(Movies).filter_by(id=movie_id).one_or_none()
-		if login_session.get('email') == movie.user_email:
-			movie.name = request.form['name']
-			movie.director = request.form['director']
-			movie.description = request.form['description']
-			movie.posterUrl = request.form['posterUrl']
-			Session.add(movie)
-			Session.commit()
-			return redirect(url_for('movie_page', movie_id=movie_id))
-		else:
-			return redirect(url_for('error_page',
-										error='You are not Authorized.'))
+	movie = Session.query(Movies).filter_by(id=movie_id).one_or_none()
+	if login_session.get('email') == movie.user_email:
+		movie.name = request.form['name']
+		movie.director = request.form['director']
+		movie.description = request.form['description']
+		movie.posterUrl = request.form['posterUrl']
+		Session.add(movie)
+		Session.commit()
+		return redirect(url_for('movie_page', movie_id=movie_id))
+	else:
+		return redirect(url_for('error_page',
+									error='You are not Authorized.'))
 
 
+# To delete a genre and all related movies.
 @app.route('/delete_genre/<genre>/')
 def delete_genre(genre):
 	genre = Session.query(Genres).filter_by(name=genre).one_or_none()
@@ -151,6 +164,7 @@ def delete_genre(genre):
 		return redirect(url_for('error_page', error='You are not Authorized.'))
 
 
+# Google Connect Login.
 @app.route('/gconnect/', methods=['POST'])
 def gconnect():
 	# Validate state token
@@ -230,8 +244,10 @@ def gconnect():
 					picture=login_session.get('picture'))
 
 
+# Google Logout.
 @app.route('/gdisconnect/', methods=['POST'])
 def gdisconnect():
+	# Only disconnect a connected user.
 	access_token = login_session.get('access_token')
 	if access_token is None:
 		response = make_response(json.dumps('Current user not connected.'), 401)
@@ -255,6 +271,7 @@ def gdisconnect():
 		return response
 
 
+# Error page to display errors.
 @app.route('/error/')
 def error_page():
 	set_state()

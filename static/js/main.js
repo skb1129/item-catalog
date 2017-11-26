@@ -1,3 +1,4 @@
+// Google Login callback function.
 function loginCallback(authResult) {
 	if (authResult['code']) {
 		$.ajax({
@@ -30,6 +31,7 @@ function loginCallback(authResult) {
 	}
 }
 
+// Google Logout function.
 function logout() {
 	$.ajax({
 		type: 'POST',
@@ -57,6 +59,7 @@ function logout() {
 	});
 }
 
+// Link to google login button.
 gapi.signin.render('google_login', {
 	'clientid': '328779283947-c2aqhd0qg0orkqunoc8ja2rb1mrq28or.apps.googleusercontent.com',
 	'callback': loginCallback,
