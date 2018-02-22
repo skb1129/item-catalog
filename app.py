@@ -278,9 +278,3 @@ def error_page():
 	genres = Session.query(Genres).all()	
 	return render_template('error_page.html', error=request.args.get('error'),
 							genres=genres, login_session=login_session)
-
-
-if __name__ == '__main__':
-    app.secret_key = os.urandom(12)
-    app.debug = True
-    app.run(host='0.0.0.0', port=8080)
