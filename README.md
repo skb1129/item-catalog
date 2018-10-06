@@ -14,11 +14,11 @@
 
 * All the dependencies are fetched from CDN's so Internet connection is required.
 * Start a Vagrant Virtualbox Machine inside the project directory.
-* Install <code>python-pip</code>(Python Package Index) to install python frameworks.
-* Install <code>flask</code>, <code>sqlalchemy</code> and <code>oauth2client</code> using <code>pip</code>.
+* Install `python-pip`(Python Package Index) to install python frameworks.
+* Install `flask`, `sqlalchemy` and `oauth2client` using `pip`.
 * Inside vagrant machine, goto <code>/vagrant</code> directory.
-* Run <code>python database.py</code>, <code>python fill_data.py</code>, <code>python app.py</code> respectively.
-* Finally, in your browser, goto <code>localhost:8080</code>, to access the website.
+* Run `python database.py`, `python fill_data.py`, `python app.py` respectively.
+* Finally, in your browser, goto `localhost:8080`, to access the website.
 
 ## Dependencies
 
