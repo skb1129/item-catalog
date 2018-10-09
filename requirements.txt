@@ -1,0 +1,5 @@
+flask
+sqlalchemy
+oauth2client
+requests
+httplib2
